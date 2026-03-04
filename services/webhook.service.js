@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const axios = require("axios");
 const WebhookConfig = require("../models/webhook");
-const { extractServiceFromEvent } = require("../utils/service");
+const { extractServiceFromServicesTrigger } = require("../helpers/webhook.helper");
 const { decrypt } = require("../utils/cryptoUtil");
 
 // TODO: use this consume function with rabbitmq
@@ -19,7 +19,7 @@ const consumeNotification = async (payload) => {
     );
   }
 
-  const serviceMatched = extractServiceFromEvent(configs, payload);
+  const serviceMatched = extractServiceFromServicesTrigger(configs, payload);
 
   if (!serviceMatched) {
     throw new Error(
