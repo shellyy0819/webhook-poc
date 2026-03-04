@@ -1,13 +1,11 @@
 const crypto = require("crypto");
+require("dotenv").config();
 
-const algorithm = "aes-256-cbc";
+const algorithm = process.env.ALGORITHM;
 
 // Always derive 32-byte key using SHA256
 const getKey = (key) => {
-  return crypto
-    .createHash("sha256")
-    .update(key)
-    .digest();
+  return crypto.createHash("sha256").update(key).digest();
 };
 
 const encrypt = (text, key) => {
@@ -36,4 +34,8 @@ const decrypt = (encryptedText, key) => {
   return decrypted;
 };
 
-module.exports = { encrypt, decrypt };
+const generateSalt = (key) => {
+  return key + process.env.MASTER_ENCRYPTION_KEY;
+};
+
+module.exports = { encrypt, decrypt, generateSalt };

@@ -8,14 +8,6 @@ const extractServiceFromEvent = (configs, payload) => {
   );
 };
 
-const formatServicesForNotification = (enabledServices) => {
-  const result = enabledServices.map((service) => {
-    return { [service?.split("_")?.[0]?.toLocaleLowerCase()]: true };
-  });
-  return result;
-};
-
 module.exports = {
   extractServiceFromEvent,
-  formatServicesForNotification,
 };

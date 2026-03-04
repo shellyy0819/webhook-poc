@@ -2,10 +2,7 @@ require("dotenv").config();
 
 const axios = require("axios");
 const WebhookConfig = require("../models/webhook");
-const {
-  extractServiceFromEvent,
-  formatServicesForNotification,
-} = require("./service");
+const { extractServiceFromEvent } = require("../utils/service");
 
 // TODO: use this consume function with rabbitmq
 const consumeNotification = async (payload) => {
@@ -52,4 +49,4 @@ const consumeNotification = async (payload) => {
   }
 };
 
-module.exports = { consumeNotification, formatServicesForNotification };
+module.exports = { consumeNotification };
