@@ -3,6 +3,7 @@ require("dotenv").config();
 const axios = require("axios");
 const WebhookConfig = require("../models/webhook");
 const { extractServiceFromEvent } = require("../utils/service");
+const { decrypt } = require("../utils/cryptoUtil");
 
 // TODO: use this consume function with rabbitmq
 const consumeNotification = async (payload) => {
@@ -26,7 +27,7 @@ const consumeNotification = async (payload) => {
     );
   }
 
-  const salt = process.env.MASTER_ENCRYPTION_KEY + configs.client_id;
+  const salt = configs.client_id + process.env.MASTER_ENCRYPTION_KEY;
   const decryptedApiKey = decrypt(configs.encrypted_key, salt);
 
   try {
@@ -44,7 +45,7 @@ const consumeNotification = async (payload) => {
     console.error("Webhook call failed:", err.message);
 
     throw new Error(
-      `Webhook delivery failed for client_id: ${payload.client_id}`,
+      `Error: ${err}; Webhook delivery failed for client_id: ${payload.client_id}`,
     );
   }
 };
