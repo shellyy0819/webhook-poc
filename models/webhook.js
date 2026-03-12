@@ -2,13 +2,32 @@ const mongoose = require("mongoose");
 
 const webhookConfigSchema = new mongoose.Schema(
   {
-    client_id: { type: String, required: true, unique: true },
-    webhook_url: { type: String, required: true },
-    encrypted_key: { type: String, required: true },
-    service_trigger: { type: Array, default: [] }
+    clientId: { type: String, required: true, unique: true },
+    webhookUrl: { type: String, required: true },
+    encryptedKey: { type: String, required: true },
+    serviceTrigger: {
+      type: Object,
+      required: true,
+    },
+    settings: {
+      type: Object,
+      required: true,
+    },
+    retryEnabled: {
+      type: Boolean,
+      default: false,
+    },
+    retryCount: {
+      type: Number,
+      default: 0,
+    },
+    isActive: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );
 
-webhookConfigSchema.index({ client_id: 1 }, { unique: true });
+webhookConfigSchema.index({ clientId: 1 }, { unique: true });
 module.exports = mongoose.model("WebhookConfig", webhookConfigSchema);

@@ -4,11 +4,7 @@ const fastify = require("fastify")({ logger: true });
 const mongoose = require("mongoose");
 
 const webhookRoutes = require("./routes/webhookRoutes");
-
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.error(err));
+const {connectMongoose} = require('./helpers/mongoose.helper')
 
 /**
  * ✅ Enable CORS
@@ -22,6 +18,7 @@ fastify.register(webhookRoutes, { prefix: "/api/webhook" });
 
 const start = async () => {
   try {
+    await connectMongoose();
     await fastify.listen({ port: 3000 });
     console.log("Server running on port 3000");
   } catch (err) {

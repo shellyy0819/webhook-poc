@@ -10,28 +10,29 @@ const consumeNotification = async (payload) => {
   // expects payload from notification service
   // trigger webhook api with payload
   const configs = await WebhookConfig.findOne({
-    client_id: payload.client_id,
+    clientId: payload.clientId,
   });
 
   if (!configs) {
     throw new Error(
-      `Webhook config not found for client_id: ${payload.client_id}`,
+      `Webhook config not found for clientId: ${payload.clientId}`,
     );
   }
 
-  const serviceMatched = extractServiceFromServicesTrigger(configs, payload);
+  // Do not remove yet
+  // const serviceMatched = extractServiceFromServicesTrigger(configs, payload);
 
-  if (!serviceMatched) {
-    throw new Error(
-      `Service ${payload.service}_${payload.status} not enabled for client_id: ${payload.client_id}`,
-    );
-  }
+  // if (!serviceMatched) {
+  //   throw new Error(
+  //     `Service ${payload.service}_${payload.status} not enabled for clientId: ${payload.clientId}`,
+  //   );
+  // }
 
-  const salt = configs.client_id + process.env.MASTER_ENCRYPTION_KEY;
-  const decryptedApiKey = decrypt(configs.encrypted_key, salt);
+  const salt = configs.clientId + process.env.MASTER_ENCRYPTION_KEY;
+  const decryptedApiKey = decrypt(configs.encryptedKey, salt);
 
   try {
-    const response = await axios.post(configs.webhook_url, payload, {
+    const response = await axios.post(configs.webhookUrl, payload, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${decryptedApiKey}`,
@@ -45,7 +46,7 @@ const consumeNotification = async (payload) => {
     console.error("Webhook call failed:", err.message);
 
     throw new Error(
-      `Error: ${err}; Webhook delivery failed for client_id: ${payload.client_id}`,
+      `Error: ${err}; Webhook delivery failed for clientId: ${payload.clientId}`,
     );
   }
 };

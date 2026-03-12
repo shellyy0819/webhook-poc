@@ -41,6 +41,27 @@ const extractServiceFromServicesTrigger = (configs, payload) => {
   ) ?? false;
 };
 
+function buildSettings(service_trigger = {}) {
+  const SERVICES = ["sms", "email", "slack"];
+
+  const settings = {};
+  const finalServiceTrigger = {};
+
+  SERVICES.forEach((service) => {
+    const triggers = service_trigger?.[service];
+
+    if (Array.isArray(triggers) && triggers.length > 0) {
+      settings[service] = true;
+      finalServiceTrigger[service] = triggers;
+    } else {
+      settings[service] = false;
+    }
+  });
+
+  return { settings, finalServiceTrigger };
+}
+
 module.exports = {
   extractServiceFromServicesTrigger,
+  buildSettings
 };
